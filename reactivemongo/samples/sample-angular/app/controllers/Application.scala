@@ -65,7 +65,7 @@ object Application3 extends ReactiveMongoAutoSourceController[Person] {
       request.session.get("user").flatMap(u => User.find(u))
     }
 
-    def invokeBlock[A](request: Request[A], block: AuthenticatedUserRequest[A] => Future[SimpleResult]): Future[SimpleResult] = {
+    def invokeBlock[A](request: Request[A], block: AuthenticatedUserRequest[A] => Future[Result]): Future[Result] = {
       getUser(request) match {
         case Some(user)  => block(AuthenticatedUserRequest(user, request))
         case None        => Future.successful(Unauthorized)
@@ -83,7 +83,7 @@ object Application3 extends ReactiveMongoAutoSourceController[Person] {
   }*/
 
   override val insertAction = new ActionBuilder[Request]{
-    def invokeBlock[A](request: Request[A], block: Request[A] => Future[SimpleResult]) = {
+    def invokeBlock[A](request: Request[A], block: Request[A] => Future[Result]) = {
       play.Logger.info(s"Before Insert Action")
       block(request).map{ a =>
         play.Logger.info(s"After Insert Action")
@@ -94,7 +94,7 @@ object Application3 extends ReactiveMongoAutoSourceController[Person] {
 
   override val getAction = Authenticated.asInstanceOf[ActionBuilder[Request]] 
   /*new ActionBuilder[Request]{
-    def invokeBlock[A](request: Request[A], block: Request[A] => Future[SimpleResult]) = {
+    def invokeBlock[A](request: Request[A], block: Request[A] => Future[Result]) = {
       play.Logger.info(s"Before Get Action")
       block(request).map{ a =>
         play.Logger.info(s"After Get Action")

@@ -1,6 +1,9 @@
+import play.PlayScala
 import sbt._
 import Keys._
 import bintray.Plugin.bintraySettings
+import play.Play.autoImport._
+import PlayKeys._
 
 object ApplicationBuild extends Build {
   val buildName    = "play-autosource"
@@ -68,13 +71,14 @@ object ApplicationBuild extends Build {
       // can be customized by keeping major version of the core version
       version := "2.1-SNAPSHOT",
 
-      resolvers += "Sonatype Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots/",
       libraryDependencies ++= Seq(
-        "org.reactivemongo" %% "play2-reactivemongo" % "0.10.5.akka23-SNAPSHOT",
-        "com.typesafe.play" %% "play"                % V.play         % "provided"
+        "com.typesafe.play" %% "play"                % V.play         % "provided",
+        "org.reactivemongo" %% "play2-reactivemongo" % "0.10.5.0.akka23"
       )
     )
   ) dependsOn(core)
+
+  reactivemongo.enablePlugins(PlayScala)
 
   lazy val datomisca = Project(
     id = "datomisca",
